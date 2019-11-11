@@ -1,4 +1,9 @@
-Copyright 2017-2019 Blue Workforce
+BlueZero
+
+Copyright (C) 2017-2020 Coppelia Robotics GmbH  
+Copyright (C) 2019 Robot Nordic ApS
+
+All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
