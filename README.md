@@ -6,13 +6,9 @@ It has some similarities with ROS, although it only focuses on providing communi
 
 This project uses [semantic versioning](https://semver.org).
 
-## Download
-
-Go to https://github.com/blueworkforce/bluezero/releases to download a source tarball.
-
 ## Documentation
 
-See the generated [`docs/index.html`](https://blueworkforce.github.io/bluezero/v2/) for the documentation.
+See the generated `docs/index.html` for the documentation.
 
 ## License
 
@@ -70,7 +66,7 @@ Install the following:
 ## Compiling
 
 ```bash
-git clone --branch v2 --recursive https://github.com/BlueWorkforce/bluezero
+git clone --branch v2 --recursive https://github.com/CoppeliaRobotics/bluezero
 cd bluezero
 mkdir build
 cd build
