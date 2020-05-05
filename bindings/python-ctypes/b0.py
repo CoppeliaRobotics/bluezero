@@ -31,6 +31,7 @@ def _(n, ret, *args):
     globals()[n] = lambda *args2: _dec(globals()['_' + n](*[_enc(arg, t) for t, arg in zip(args, args2)]), ret)
 
 _("b0_init", ct.c_void_p, ct.POINTER(ct.c_int), ct.POINTER(ct.c_char_p))
+_("b0_is_initialized", ct.c_int)
 _("b0_buffer_new", ct.c_void_p, ct.c_size_t)
 _("b0_buffer_delete", None, ct.c_void_p)
 _("b0_node_new", ct.c_void_p, str)
