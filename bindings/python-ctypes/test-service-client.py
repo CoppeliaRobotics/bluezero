@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import b0
 
+if not b0.is_initialized():
+    b0.init()
 node = b0.Node('python-service-client')
 cli = b0.ServiceClient(node, 'control')
 node.init()

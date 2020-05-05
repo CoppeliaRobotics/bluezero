@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import b0
 
+if not b0.is_initialized():
+    b0.init()
 def callback(msg):
     msg_str = msg.decode('utf-8')
     print('Received message "%s"' % msg_str)

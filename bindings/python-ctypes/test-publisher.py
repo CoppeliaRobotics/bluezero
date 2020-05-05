@@ -2,6 +2,8 @@
 import b0
 import time
 
+if not b0.is_initialized():
+    b0.init()
 node = b0.Node('python-publisher')
 pub = b0.Publisher(node, 'A')
 node.init()
