@@ -97,6 +97,9 @@ def init():
     argv_p = ct.byref(argv)
     b0_init(argc_p, argv_p)
 
+def is_initialized():
+    return bool(b0_is_initialized())
+
 class Node:
     def __init__(self, name='node'):
         self._node = b0_node_new(name)
