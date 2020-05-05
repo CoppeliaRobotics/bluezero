@@ -90,9 +90,11 @@ _("b0_service_server_log", None, ct.c_void_p, ct.c_int, str)
 _("b0_service_server_set_option", ct.c_void_p, ct.c_int, ct.c_int)
 
 def init():
-    argc = 1
-    argv = ['b0python']
-    b0_init(argc, argv)
+    argc = ct.c_int(1)
+    argc_p = ct.byref(argc)
+    argv = ct.c_char_p(b'b0python')
+    argv_p = ct.byref(argv)
+    b0_init(argc_p, argv_p)
 
 class Node:
     def __init__(self, name='node'):
