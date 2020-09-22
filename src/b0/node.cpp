@@ -317,12 +317,6 @@ void Node::setAnnounceTimeout(int timeout)
     resolv_cli_.setAnnounceTimeout(timeout);
 }
 
-std::string Node::freeTCPAddress()
-{
-    boost::format fmt("tcp://%s:%d");
-    return (fmt % hostname() % freeTCPPort()).str();
-}
-
 void Node::announceNode()
 {
     private2_->resolv_cli_.announceNode(hostname(), pid(), name_, xpub_sock_addr_, xsub_sock_addr_, minimum_heartbeat_interval_);

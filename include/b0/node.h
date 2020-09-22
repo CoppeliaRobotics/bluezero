@@ -234,11 +234,6 @@ public:
 
 protected:
     /*!
-     * \brief Find and return an available tcp address, e.g. tcp://hostname:portnumber
-     */
-    virtual std::string freeTCPAddress();
-
-    /*!
      * \brief Announce this node to resolver
      */
     virtual void announceNode();
