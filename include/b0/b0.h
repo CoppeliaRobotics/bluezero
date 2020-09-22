@@ -927,6 +927,26 @@ bool quitRequested();
  */
 void quit();
 
+/*!
+ * \brief Return the public address (IP or hostname) to reach this node on the network
+ */
+std::string getHostName();
+
+/*!
+ * \brief Return the process id of this node
+ */
+int getPID();
+
+/*!
+ * \brief Return the thread identifier of this node.
+ */
+std::string getThreadID();
+
+/*!
+ * \brief Find and return an available TCP port
+ */
+int getFreeTCPPort();
+
 } // namespace b0
 
 #endif // B0__B0_H__INCLUDED

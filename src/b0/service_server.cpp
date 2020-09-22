@@ -118,8 +118,8 @@ std::string ServiceServer::getServiceName()
 void ServiceServer::bind()
 {
     boost::format fmt("tcp://%s:%d");
-    std::string host = node_.hostname();
-    int port = node_.freeTCPPort();
+    std::string host = b0::getHostName();
+    int port = b0::getFreeTCPPort();
     bind_addr_ = (fmt % "*" % port).str();
     remote_addr_ = (fmt % host % port).str();
     Socket::bind(bind_addr_);

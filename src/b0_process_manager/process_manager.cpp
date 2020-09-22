@@ -185,7 +185,7 @@ public:
     void sendBeacon()
     {
         Beacon beacon;
-        beacon.host_name = hostname();
+        beacon.host_name = getHostName();
         beacon.node_name = getName();
         beacon.service_name = srv_.getName();
         beacon_pub_.publish(beacon);
