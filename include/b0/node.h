@@ -188,24 +188,9 @@ private:
 
 public:
     /*!
-     * \brief Return the public address (IP or hostname) to reach this node on the network
-     */
-    virtual std::string hostname() const;
-
-    /*!
-     * \brief Return the process id of this node
-     */
-    virtual int pid();
-
-    /*!
      * \brief Return the thread identifier of this node.
      */
-    virtual std::string threadID();
-
-    /*!
-     * \brief Find and return an available TCP port
-     */
-    virtual int freeTCPPort();
+    std::string getThreadID() const;
 
     /*!
      * \brief Notify topic publishing/subscription start or end
@@ -233,11 +218,6 @@ public:
     virtual void setAnnounceTimeout(int timeout = -1);
 
 protected:
-    /*!
-     * \brief Find and return an available tcp address, e.g. tcp://hostname:portnumber
-     */
-    virtual std::string freeTCPAddress();
-
     /*!
      * \brief Announce this node to resolver
      */
@@ -322,7 +302,7 @@ private:
     std::atomic<NodeState> state_;
 
     //! Id of the thread in which this node has been created
-    boost::thread::id thread_id_;
+    std::string thread_id_;
 
     //! Heartbeat thread
     boost::thread heartbeat_thread_;

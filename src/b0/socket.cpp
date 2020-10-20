@@ -50,7 +50,7 @@ void Socket::spinOnce()
 
 void Socket::log(logger::Level level, const std::string &message) const
 {
-    if(boost::lexical_cast<std::string>(boost::this_thread::get_id()) == node_.threadID())
+    if(b0::getThreadID() == node_.getThreadID())
         node_.log(level, message);
 }
 

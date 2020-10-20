@@ -70,15 +70,15 @@ Resolver::~Resolver()
 
 void Resolver::init()
 {
-    setResolverAddress(address(hostname(), resolv_server_.port()));
+    setResolverAddress(address(getHostName(), resolv_server_.port()));
 
     // setup XPUB-XSUB proxy addresses
     // those will be sent to nodes in response to announce
-    int xsub_proxy_port_ = freeTCPPort();
-    xsub_proxy_addr_ = address(hostname(), xsub_proxy_port_);
+    int xsub_proxy_port_ = getFreeTCPPort();
+    xsub_proxy_addr_ = address(getHostName(), xsub_proxy_port_);
     trace("XSUB address is %s", xsub_proxy_addr_);
-    int xpub_proxy_port_ = freeTCPPort();
-    xpub_proxy_addr_ = address(hostname(), xpub_proxy_port_);
+    int xpub_proxy_port_ = getFreeTCPPort();
+    xpub_proxy_addr_ = address(getHostName(), xpub_proxy_port_);
     trace("XPUB address is %s", xpub_proxy_addr_);
     // run XPUB-XSUB proxy:
     pub_proxy_thread_ = boost::thread(&Resolver::pubProxy, this, xsub_proxy_port_, xpub_proxy_port_);
@@ -124,8 +124,8 @@ void Resolver::announceNode()
 {
     // directly route this call to the handler, otherwise it will cause a deadlock
     b0::message::resolv::AnnounceNodeRequest rq;
-    rq.host_id = hostname();
-    rq.process_id = pid();
+    rq.host_id = getHostName();
+    rq.process_id = getPID();
     rq.node_name = getName();
     b0::message::resolv::AnnounceNodeResponse rsp;
     handleAnnounceNode(rq, rsp);

@@ -12,7 +12,6 @@
 #include <cstdlib>
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
-#include <boost/asio.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -47,7 +46,7 @@ Node::Node(const std::string &nodeName)
       name_(Global::getInstance().getRemappedNodeName(*this, nodeName)),
       orig_name_(nodeName),
       state_(NodeState::Created),
-      thread_id_(boost::this_thread::get_id()),
+      thread_id_(::b0::getThreadID()),
       p_logger_(new logger::Logger(this)),
       shutdown_flag_(false),
       minimum_heartbeat_interval_(0),
@@ -203,7 +202,7 @@ void Node::cleanup()
 
 void Node::log(logger::Level level, const std::string &message) const
 {
-    if(boost::this_thread::get_id() != thread_id_)
+    if(::b0::getThreadID() != thread_id_)
         throw exception::Exception("cannot call Node::log() from another thread");
 
     p_logger_->log(level, message);
@@ -263,28 +262,9 @@ void Node::removeSocket(Socket *socket)
     sockets_.erase(socket);
 }
 
-std::string Node::hostname() const
+std::string Node::getThreadID() const
 {
-    return b0::env::get("B0_HOST_ID", boost::asio::ip::host_name());
-}
-
-int Node::pid()
-{
-    return ::getpid();
-}
-
-std::string Node::threadID()
-{
-    return boost::lexical_cast<std::string>(thread_id_);
-}
-
-int Node::freeTCPPort()
-{
-    // by binding the OS socket to port 0, an available port number will be used
-    boost::asio::ip::tcp::endpoint ep(boost::asio::ip::tcp::v4(), 0);
-    boost::asio::io_service io_service;
-    boost::asio::ip::tcp::socket socket(io_service, ep);
-    return socket.local_endpoint().port();
+    return thread_id_;
 }
 
 void Node::notifyTopic(const std::string &topic_name, bool reverse, bool active)
@@ -317,15 +297,9 @@ void Node::setAnnounceTimeout(int timeout)
     resolv_cli_.setAnnounceTimeout(timeout);
 }
 
-std::string Node::freeTCPAddress()
-{
-    boost::format fmt("tcp://%s:%d");
-    return (fmt % hostname() % freeTCPPort()).str();
-}
-
 void Node::announceNode()
 {
-    private2_->resolv_cli_.announceNode(hostname(), pid(), name_, xpub_sock_addr_, xsub_sock_addr_, minimum_heartbeat_interval_);
+    private2_->resolv_cli_.announceNode(getHostName(), getPID(), name_, xpub_sock_addr_, xsub_sock_addr_, minimum_heartbeat_interval_);
 
     if(logger::Logger *p_logger = dynamic_cast<logger::Logger*>(p_logger_))
         p_logger->connect(xsub_sock_addr_);
