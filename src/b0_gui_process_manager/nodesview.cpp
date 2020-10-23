@@ -337,10 +337,10 @@ void NodesView::arrangeItems()
     }
     process.waitForFinished();
     QString out(process.readAllStandardOutput());
-    QStringList lines = out.split(QRegExp("[\r\n]"), QString::SkipEmptyParts);
+    QStringList lines = out.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
     for(auto line : lines)
     {
-        QStringList tokens = line.split(QRegExp("\\s"), QString::SkipEmptyParts);
+        QStringList tokens = line.split(QRegExp("\\s"), Qt::SkipEmptyParts);
         if(tokens[0] == "node")
         {
             QString id = tokens[1];
@@ -357,9 +357,9 @@ void NodesView::arrangeItems()
 
 void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> &itemMap) const
 {
-    stream << "digraph {" << endl;
-    stream << "  graph [overlap=false];" << endl;
-    stream << "  node [shape=box];" << endl;
+    stream << "digraph {" << Qt::endl;
+    stream << "  graph [overlap=false];" << Qt::endl;
+    stream << "  node [shape=box];" << Qt::endl;
 
     long itemCount = 1;
     QString itemIdFmt("item_%1");
@@ -372,7 +372,7 @@ void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> 
             QString id = itemIdFmt.arg(itemCount++);
             abstractItem->setData(graphvizIdKey, id);
             itemMap.insert(id, abstractItem);
-            stream << "  " << id << " [label=\"" << abstractItem->text() << "\"]" << endl;
+            stream << "  " << id << " [label=\"" << abstractItem->text() << "\"]" << Qt::endl;
         }
     }
 
@@ -384,11 +384,11 @@ void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> 
                 << connection->source()->data(graphvizIdKey).toString()
                 << " -> "
                 << connection->destination()->data(graphvizIdKey).toString()
-                << ";" << endl;
+                << ";" << Qt::endl;
         }
     }
 
-    stream << "}" << endl;
+    stream << "}" << Qt::endl;
 }
 
 void NodesView::contextMenuEvent(QContextMenuEvent *event)
