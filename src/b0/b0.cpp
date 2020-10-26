@@ -36,12 +36,19 @@ static void signalHandler(int sig)
 static void setupSignalHandler()
 {
 #ifdef HAVE_POSIX_SIGNALS
-    struct sigaction sa;
+    struct sigaction sa, sa_old;
+
     std::memset(&sa, 0, sizeof(sa));
     sa.sa_handler = signalHandler;
     sigfillset(&sa.sa_mask);
-    sigaction(SIGINT, &sa, NULL);
-    sigaction(SIGTERM, &sa, NULL);
+
+    sigaction(SIGINT, NULL, &sa_old);
+    if(sa_old.sa_handler == SIG_DFL)
+        sigaction(SIGINT, &sa, NULL);
+
+    sigaction(SIGTERM, NULL, &sa_old);
+    if(sa_old.sa_handler == SIG_DFL)
+        sigaction(SIGTERM, &sa, NULL);
 #endif
 }
 
