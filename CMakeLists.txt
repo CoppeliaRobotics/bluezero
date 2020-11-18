@@ -13,7 +13,8 @@ else()
     set(BUILD_STATIC_LIB_DEFAULT OFF)
 endif()
 option(BUILD_STATIC_LIB "Build static library" ${BUILD_STATIC_LIB_DEFAULT})
-option(BUILD_TOOLS "Build the tools (topic and service introspection, process manager...)" ON)
+option(BUILD_TOOLS "Build basic tools (topic and service introspection)" ON)
+option(BUILD_EXTRA_TOOLS "Build extra tools (system monitor, process manager)" OFF)
 option(BUILD_EXAMPLES "Build the examples" ON)
 option(BUILD_TESTS "Build the testcases" ON)
 option(BUILD_GUI "Build gui programs" OFF)
@@ -369,7 +370,9 @@ if(BUILD_TOOLS)
         src/b0_service_call/service_call.cpp
     )
     target_link_libraries(b0_service_call ${B0_LIBRARY})
+endif(BUILD_TOOLS)
 
+if(BUILD_EXTRA_TOOLS)
     add_executable(
         b0_process_manager
         src/b0_process_manager/process_manager.cpp
@@ -390,7 +393,7 @@ if(BUILD_TOOLS)
         src/b0_system_monitor/system_monitor.cpp
     )
     target_link_libraries(b0_system_monitor ${B0_LIBRARY})
-endif(BUILD_TOOLS)
+endif(BUILD_EXTRA_TOOLS)
 
 if(BUILD_GUI)
     find_package(Qt5Core REQUIRED)
