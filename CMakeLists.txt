@@ -13,7 +13,8 @@ else()
     set(BUILD_STATIC_LIB_DEFAULT OFF)
 endif()
 option(BUILD_STATIC_LIB "Build static library" ${BUILD_STATIC_LIB_DEFAULT})
-option(BUILD_TOOLS "Build the tools (topic and service introspection, process manager...)" ON)
+option(BUILD_TOOLS "Build basic tools (topic and service introspection)" ON)
+option(BUILD_EXTRA_TOOLS "Build extra tools (system monitor, process manager)" OFF)
 option(BUILD_EXAMPLES "Build the examples" ON)
 option(BUILD_TESTS "Build the testcases" ON)
 option(BUILD_GUI "Build gui programs" OFF)
@@ -22,6 +23,15 @@ option(BINDINGS_BOOST_PYTHON "Compile python bindings (using boost::python)" OFF
 option(BINDINGS_JAVA "Compile Java bindings (using JNI)" OFF)
 option(BINDINGS_LUA "Compile Lua bindings" OFF)
 option(BINDINGS_SWIG "Enable build of bindings using SWIG" OFF)
+
+set(INSTALL_DIR "" CACHE PATH "If specified, it will used as install destination")
+if(INSTALL_DIR)
+    if(NOT EXISTS "${INSTALL_DIR}")
+        message(FATAL_ERROR "'${INSTALL_DIR}' does not exist")
+    elseif(NOT IS_DIRECTORY "${INSTALL_DIR}")
+        message(FATAL_ERROR "'${INSTALL_DIR}' is not a directory")
+    endif()
+endif()
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR 1)
@@ -269,6 +279,9 @@ endif()
 if(ENABLE_PROTOBUF)
     target_link_libraries(${B0_LIBRARY_SHARED} ${Protobuf_LIBRARIES})
 endif()
+if(INSTALL_DIR)
+    install(TARGETS ${B0_LIBRARY_SHARED} DESTINATION ${INSTALL_DIR})
+endif()
 
 if(BUILD_STATIC_LIB)
 set(B0_LIBRARY_STATIC b0-static)
@@ -292,6 +305,9 @@ if(WIN32)
 endif()
 if(ENABLE_PROTOBUF)
     target_link_libraries(${B0_LIBRARY_STATIC} ${Protobuf_LIBRARIES})
+endif()
+if(INSTALL_DIR)
+    install(TARGETS ${B0_LIBRARY_STATIC} DESTINATION ${INSTALL_DIR})
 endif()
 endif(BUILD_STATIC_LIB)
 
@@ -320,6 +336,9 @@ add_executable(
     src/b0_resolver/resolver_main.cpp
 )
 target_link_libraries(b0_resolver ${B0_LIBRARY})
+if(INSTALL_DIR)
+    install(TARGETS b0_resolver DESTINATION ${INSTALL_DIR})
+endif()
 
 if(BUILD_TOOLS)
     add_executable(
@@ -327,49 +346,75 @@ if(BUILD_TOOLS)
         src/b0_logger_monitor/logger_monitor.cpp
     )
     target_link_libraries(b0_logger_monitor ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_logger_monitor DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_graph_monitor
         src/b0_graph_monitor/graph_monitor.cpp
     )
     target_link_libraries(b0_graph_monitor ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_graph_monitor DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_node_list
         src/b0_node_list/node_list.cpp
     )
     target_link_libraries(b0_node_list ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_node_list DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_topic_list
         src/b0_topic_list/topic_list.cpp
     )
     target_link_libraries(b0_topic_list ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_topic_list DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_topic_echo
         src/b0_topic_echo/topic_echo.cpp
     )
     target_link_libraries(b0_topic_echo ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_topic_echo DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_topic_publish
         src/b0_topic_publish/topic_publish.cpp
     )
     target_link_libraries(b0_topic_publish ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_topic_publish DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_service_list
         src/b0_service_list/service_list.cpp
     )
     target_link_libraries(b0_service_list ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_service_list DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_service_call
         src/b0_service_call/service_call.cpp
     )
     target_link_libraries(b0_service_call ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_service_call DESTINATION ${INSTALL_DIR})
+    endif()
+endif(BUILD_TOOLS)
 
+if(BUILD_EXTRA_TOOLS)
     add_executable(
         b0_process_manager
         src/b0_process_manager/process_manager.cpp
@@ -378,19 +423,28 @@ if(BUILD_TOOLS)
     if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         target_link_libraries(b0_process_manager dl)
     endif()
+    if(INSTALL_DIR)
+        install(TARGETS b0_process_manager DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_process_manager_hub
         src/b0_process_manager/hub.cpp
     )
     target_link_libraries(b0_process_manager_hub ${B0_LIBRARY})
+    if(INSTALL_DIR)
+        install(TARGETS b0_process_manager_hub DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_system_monitor
         src/b0_system_monitor/system_monitor.cpp
     )
     target_link_libraries(b0_system_monitor ${B0_LIBRARY})
-endif(BUILD_TOOLS)
+    if(INSTALL_DIR)
+        install(TARGETS b0_system_monitor DESTINATION ${INSTALL_DIR})
+    endif()
+endif(BUILD_EXTRA_TOOLS)
 
 if(BUILD_GUI)
     find_package(Qt5Core REQUIRED)
@@ -402,12 +456,18 @@ if(BUILD_GUI)
         src/b0_gui_logger_monitor/gui_logger_monitor.cpp
     )
     target_link_libraries(b0_gui_logger_monitor ${B0_LIBRARY} Qt5::Core Qt5::Gui Qt5::Widgets)
+    if(INSTALL_DIR)
+        install(TARGETS b0_gui_logger_monitor DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_gui_graph_monitor
         src/b0_gui_graph_monitor/gui_graph_monitor.cpp
     )
     target_link_libraries(b0_gui_graph_monitor ${B0_LIBRARY} Qt5::Core Qt5::Gui Qt5::Widgets)
+    if(INSTALL_DIR)
+        install(TARGETS b0_gui_graph_monitor DESTINATION ${INSTALL_DIR})
+    endif()
 
     add_executable(
         b0_gui_process_manager
@@ -426,6 +486,9 @@ if(BUILD_GUI)
         src/b0_gui_process_manager
     )
     target_link_libraries(b0_gui_process_manager ${B0_LIBRARY} Qt5::Core Qt5::Gui Qt5::Widgets)
+    if(INSTALL_DIR)
+        install(TARGETS b0_gui_process_manager DESTINATION ${INSTALL_DIR})
+    endif()
 endif()
 
 #install(
