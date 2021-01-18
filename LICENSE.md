@@ -1,6 +1,6 @@
 BlueZero
 
-Copyright (C) 2017-2020 Coppelia Robotics AG  
+Copyright (C) 2017-2021 Coppelia Robotics AG  
 Copyright (C) 2019 Robot Nordic ApS
 
 All rights reserved.
