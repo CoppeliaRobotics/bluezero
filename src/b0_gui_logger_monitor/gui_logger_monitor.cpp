@@ -129,7 +129,13 @@ public:
 
     void textNodeChanged(const QString &txt)
     {
-        QStringList words = textNode->text().split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+        QStringList words = textNode->text().split(QRegExp("\\s+"),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+            Qt::SkipEmptyParts
+#else
+            QString::SkipEmptyParts
+#endif
+        );
         filterNodeNames.clear();
         foreach(QString s, words)
             filterNodeNames.push_back(s.toStdString());

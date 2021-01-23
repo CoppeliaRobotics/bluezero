@@ -11,6 +11,13 @@
 #define horizontalAdvance width
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#include <iostream>
+using std::endl;
+#else
+using Qt::endl;
+#endif
+
 AbstractItem::AbstractItem(NodesView *nodeView)
     : nodesView_(nodeView)
 {
@@ -337,10 +344,22 @@ void NodesView::arrangeItems()
     }
     process.waitForFinished();
     QString out(process.readAllStandardOutput());
-    QStringList lines = out.split(QRegExp("[\r\n]"), Qt::SkipEmptyParts);
+    QStringList lines = out.split(QRegExp("[\r\n]"),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        Qt::SkipEmptyParts
+#else
+        QString::SkipEmptyParts
+#endif
+    );
     for(auto line : lines)
     {
-        QStringList tokens = line.split(QRegExp("\\s"), Qt::SkipEmptyParts);
+        QStringList tokens = line.split(QRegExp("\\s"),
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+            Qt::SkipEmptyParts
+#else
+            QString::SkipEmptyParts
+#endif
+        );
         if(tokens[0] == "node")
         {
             QString id = tokens[1];
@@ -357,9 +376,9 @@ void NodesView::arrangeItems()
 
 void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> &itemMap) const
 {
-    stream << "digraph {" << Qt::endl;
-    stream << "  graph [overlap=false];" << Qt::endl;
-    stream << "  node [shape=box];" << Qt::endl;
+    stream << "digraph {" << endl;
+    stream << "  graph [overlap=false];" << endl;
+    stream << "  node [shape=box];" << endl;
 
     long itemCount = 1;
     QString itemIdFmt("item_%1");
@@ -372,7 +391,7 @@ void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> 
             QString id = itemIdFmt.arg(itemCount++);
             abstractItem->setData(graphvizIdKey, id);
             itemMap.insert(id, abstractItem);
-            stream << "  " << id << " [label=\"" << abstractItem->text() << "\"]" << Qt::endl;
+            stream << "  " << id << " [label=\"" << abstractItem->text() << "\"]" << endl;
         }
     }
 
@@ -384,11 +403,11 @@ void NodesView::toGraphviz(QTextStream &stream, QMap<QString, AbstractVertex *> 
                 << connection->source()->data(graphvizIdKey).toString()
                 << " -> "
                 << connection->destination()->data(graphvizIdKey).toString()
-                << ";" << Qt::endl;
+                << ";" << endl;
         }
     }
 
-    stream << "}" << Qt::endl;
+    stream << "}" << endl;
 }
 
 void NodesView::contextMenuEvent(QContextMenuEvent *event)
