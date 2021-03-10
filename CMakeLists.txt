@@ -447,9 +447,7 @@ if(BUILD_EXTRA_TOOLS)
 endif(BUILD_EXTRA_TOOLS)
 
 if(BUILD_GUI)
-    find_package(Qt5Core REQUIRED)
-    find_package(Qt5Gui REQUIRED)
-    find_package(Qt5Widgets REQUIRED)
+    find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
     add_executable(
         b0_gui_logger_monitor
